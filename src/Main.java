@@ -9,5 +9,8 @@ public class Main {
         //changes
         //i hate niggers
         System.out.println("I fucking hate niggas");
+
+        System.out.println("sasdasdxc");
+        System.out.println("hksjdhakjdhjak");
     }
 }
