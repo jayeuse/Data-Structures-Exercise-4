@@ -7,5 +7,7 @@ public class Main {
         //ivee
 
         //changes
+        //i hate niggers
+        System.out.println("I fucking hate niggas");
     }
 }
