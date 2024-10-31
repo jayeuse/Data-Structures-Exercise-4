@@ -1,4 +1,5 @@
-import java.util.Stack;
+package CeejayFolder;
+
 import java.util.Scanner;
 
 public class Operations {
