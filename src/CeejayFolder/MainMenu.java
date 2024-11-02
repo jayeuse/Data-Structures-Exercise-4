@@ -7,6 +7,8 @@ public class MainMenu {
     Scanner sc = new Scanner(System.in);
     Operations operations = new Operations();
 
+    String filler;
+
     public void createMenu () {
 
         while (true){
@@ -31,7 +33,32 @@ public class MainMenu {
                         operations.Infix_to_Prefix();
                         break;
                     case 3:
-                        operations.Postfix_to_Prefix();
+
+                        boolean isRunning = true;
+
+                        do {
+
+                            operations.Postfix_to_Prefix();
+
+                            String tryAgain;
+                            while (true) {
+                                System.out.print("Try Again? (Y/N): ");
+                                tryAgain = sc.nextLine().trim();
+
+                                if (tryAgain.equalsIgnoreCase("y") || tryAgain.equalsIgnoreCase("n")) {
+                                    clearScreen();
+                                    break;
+                                } else {
+                                    System.out.println("Invalid input. Please enter 'Y' or 'N'.");
+                                }
+                            }
+
+                            if (tryAgain.equalsIgnoreCase("n")) {
+                                isRunning = false;
+                            }
+
+                        } while (isRunning);
+
                         break;
                     case 0:
                         System.out.println("Ending Program");
@@ -46,5 +73,23 @@ public class MainMenu {
                 sc.nextLine();
             }
         }
+    }
+
+    public void clearScreen(){
+        System.out.println("Enter to Continue");
+        filler = sc.nextLine();
+
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
