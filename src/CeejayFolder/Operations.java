@@ -28,22 +28,18 @@ public class Operations {
     for (int i = 0; i < postfix.length(); i++) {
         char characterExpression = postfix.charAt(i);
 
-        // Skip whitespace for flexibility
         if (Character.isWhitespace(characterExpression)) {
             continue;
         }
 
-        // If the character is an operand, push it onto the stack
         if (Character.isLetterOrDigit(characterExpression)) {
             stack.push(String.valueOf(characterExpression));
         } 
-        // If the character is an operator
         else if (isOperator(characterExpression)) {
             // Pop the top two elements from the stack
             String operand2 = stack.pop();
             String operand1 = stack.pop();
 
-            // Form the new infix expression considering operator precedence
             String infix = applyPrecedence(operand1, characterExpression, operand2);
             stack.push(infix);
         } else {
@@ -118,9 +114,9 @@ public class Operations {
         int lastPrecedence = precedence(lastOperator);
 
         if (isLeftOperand) {
-            result = currentPrecedence > lastPrecedence; // If it's a left operand, check for greater precedence
+            result = currentPrecedence > lastPrecedence;
         } else {
-            result = currentPrecedence >= lastPrecedence; // If it's not a left operand, check for greater or equal precedence
+            result = currentPrecedence >= lastPrecedence;
         }
 
         return result;
