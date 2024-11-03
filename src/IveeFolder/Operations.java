@@ -1,7 +1,7 @@
 package IveeFolder;
 
 import java.util.Scanner;
-import java.util.Stacks;
+import java.util.Stack;
 
 public class Operations {
     Scanner sc = new Scanner(System.in);
@@ -13,7 +13,7 @@ public class Operations {
             try{
             System.out.println("Infix to Postfix Operation");
             System.out.println("Enter an Infix Expression: ");
-                String InfixEx = scanner.nextLine();
+                String InfixEx = sc.nextLine();
 
                 String PostfixEx = InfixtoPostfix(InfixEx);
             System.out.println("From Infix to PostFIX Expression: " + PostfixEx);
@@ -21,7 +21,7 @@ public class Operations {
     }   catch (Exception e){
         System.out.println("Error! Please enter a valid INFIX EXPRESSION.");
         System.out.print("Do you want to convert another expression? (Y/N): ");
-            String UserInput = scanner.nextLine().trim().toLowerCase();
+            String UserInput = sc.nextLine().trim().toLowerCase();
 
         if (!UserInput.equals("yes")){
                 ContinueConversion = false;
@@ -29,39 +29,39 @@ public class Operations {
                 
             }
         }
-        scanner.close();
+        sc.close();
     }  
-}  private String InfixtoPostfix(String InfixEx) {
+}  private String InfixtoPostfix(String InfixEx) throws Exception {
     String PostfixEx = "";
     Stack<Character> stack = new Stack<>();
 
-    for (int i = 0; i < infix.length(); i++) {
-        char ch = infix.charAt(i);
+    for (int i = 0; i < InfixEx.length(); i++) {
+        char ch = InfixEx.charAt(i);
         if (ch == '(') {
             stack.push(ch);
         } else if (ch == ')') {
             while (!stack.isEmpty() && stack.peek() != '(') {
-                postfix += stack.pop();
+                PostfixEx += stack.pop();
                     throw new Exception("Invalid expression");
             }
             stack.pop();
         } else if (Character.isLetterOrDigit(ch)) {
-            postfix += ch;
+            PostfixEx += ch;
         } else {
             while (!stack.isEmpty() && precedence(ch) <= precedence(stack.peek())) {
-                postfix += stack.pop();
+                PostfixEx += stack.pop();
             }
             stack.push(ch);
-        throw new Exception("Invalid character in expression: " + stack.peek);
+        throw new Exception("Invalid character in expression: " + stack.peek());
         }       
         
     }
 
     while (!stack.isEmpty()) {
-        postfix += stack.pop();
+        PostfixEx += stack.pop();
     }
 
-    return postfix;
+    return PostfixEx;
 }
     private int precedence(char operator) {
         switch (operator) {

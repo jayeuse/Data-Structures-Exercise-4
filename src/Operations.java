@@ -1,5 +1,5 @@
-import java.util.Stack;
 import java.util.Scanner;
+
 
 public class Operations {
     Scanner sc = new Scanner(System.in);
