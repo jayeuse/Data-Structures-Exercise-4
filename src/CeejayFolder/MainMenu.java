@@ -16,7 +16,7 @@ public class MainMenu {
             System.out.println("Conversions");
             System.out.println("1. Infix to Postfix");
             System.out.println("2. Infix to Prefix");
-            System.out.println("3. Postfix to Prefix");
+            System.out.println("3. Postfix to Infix");
             System.out.println("0. Stop");
             System.out.print("Enter Choice: ");
 
@@ -38,7 +38,7 @@ public class MainMenu {
 
                         do {
 
-                            operations.Postfix_to_Prefix();
+                            operations.Postfix_to_Infix();
 
                             String tryAgain;
                             while (true) {

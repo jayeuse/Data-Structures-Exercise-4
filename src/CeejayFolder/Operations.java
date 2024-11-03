@@ -14,45 +14,46 @@ public class Operations {
         System.out.println("Infix to Prefix Operation");
     }
 
-    public void Postfix_to_Prefix(){
-        System.out.println("Postfix to Prefix Operation");
-
+    public void Postfix_to_Infix() {
         System.out.print("Enter a Postfix Expression: ");
-        String postfix = sc.nextLine();
+    String postfix = sc.nextLine();
 
-        if (!isValidPostfix(postfix)) {
-            System.out.println("Invalid Postfix Expression!");
+    if (!isValidPostfix(postfix)) {
+        System.out.println("Invalid Postfix Expression!");
+        return;
+    }
+
+    Stack<String> stack = new Stack<>();
+
+    for (int i = 0; i < postfix.length(); i++) {
+        char characterExpression = postfix.charAt(i);
+
+        // Skip whitespace for flexibility
+        if (Character.isWhitespace(characterExpression)) {
+            continue;
+        }
+
+        // If the character is an operand, push it onto the stack
+        if (Character.isLetterOrDigit(characterExpression)) {
+            stack.push(String.valueOf(characterExpression));
+        } 
+        // If the character is an operator
+        else if (isOperator(characterExpression)) {
+            // Pop the top two elements from the stack
+            String operand2 = stack.pop();
+            String operand1 = stack.pop();
+
+            // Form the new infix expression considering operator precedence
+            String infix = applyPrecedence(operand1, characterExpression, operand2);
+            stack.push(infix);
+        } else {
+            System.out.println("Invalid character encountered in expression.");
             return;
         }
+    }
 
-        Stack<String> stack = new Stack<>();
-        for (int i = 0; i < postfix.length(); i++) {
-            char characterExpression = postfix.charAt(i);
-
-            if (Character.isWhitespace(characterExpression)) {
-                continue;
-            }
-
-            if (Character.isLetterOrDigit(characterExpression)) {
-                stack.push(String.valueOf(characterExpression));
-            } 
-
-            else if (isOperator(characterExpression)) {
-
-                String operand2 = stack.pop();
-                String operand1 = stack.pop();
-
-                String prefix = characterExpression + operand1 + operand2;
-
-                stack.push(prefix);
-            } else {
-                System.out.println("Invalid character encountered in expression.");
-                return;
-            }
-        }
-
-        String prefixExpression = stack.pop();
-        System.out.println("Prefix expression: " + prefixExpression);
+    String infixExpression = stack.pop();
+    System.out.println("Infix expression: " + infixExpression);
     }
 
     private boolean isValidPostfix(String postfix) {
@@ -74,11 +75,65 @@ public class Operations {
                 return false;
             }
         }
-        
         return operandCount == 1;
     }
 
-    private boolean isOperator(char opertorCharacter) {
-        return opertorCharacter == '+' || opertorCharacter == '-' || opertorCharacter == '*' || opertorCharacter == '/' || opertorCharacter == '^';
+    private boolean isOperator(char operatorCharacter) {
+        return operatorCharacter == '+' || operatorCharacter == '-' || operatorCharacter == '*' || operatorCharacter == '/' || operatorCharacter == '^';
     }
+
+    private String applyPrecedence(String operand1, char operator, String operand2) {
+        boolean leftNeedsParentheses = needsParentheses(operand1, operator, true);
+        boolean rightNeedsParentheses = needsParentheses(operand2, operator, false);
+        
+        String expr1 = leftNeedsParentheses ? "(" + operand1 + ")" : operand1;
+        String expr2 = rightNeedsParentheses ? "(" + operand2 + ")" : operand2;
+
+        return expr1 + operator + expr2;
+    }
+
+    private int precedence(char operator) {
+        switch (operator) {
+            case '+':
+            case '-':
+                return 1;
+            case '*':
+            case '/':
+                return 2;
+            case '^':
+                return 3;
+            default:
+                return -1;
+        }
+    }
+
+    private boolean needsParentheses(String operand, char operator, boolean isLeftOperand) {
+        char lastOperator = getLastOperator(operand);
+        boolean result;
+
+        if (lastOperator == '\0') {
+            return false; 
+        }
+        int currentPrecedence = precedence(operator);
+        int lastPrecedence = precedence(lastOperator);
+
+        if (isLeftOperand) {
+            result = currentPrecedence > lastPrecedence; // If it's a left operand, check for greater precedence
+        } else {
+            result = currentPrecedence >= lastPrecedence; // If it's not a left operand, check for greater or equal precedence
+        }
+
+        return result;
+    }
+
+    private char getLastOperator(String expr) {
+        for (int i = expr.length() - 1; i >= 0; i--) {
+            char characterExpression = expr.charAt(i);
+            if (isOperator(characterExpression)) {
+                return characterExpression;
+            }
+        }
+        return '\0';
+    }
+
 }
