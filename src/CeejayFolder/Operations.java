@@ -131,5 +131,4 @@ public class Operations {
         }
         return '\0';
     }
-
 }

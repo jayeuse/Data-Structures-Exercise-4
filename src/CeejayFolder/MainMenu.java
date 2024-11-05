@@ -33,13 +33,9 @@ public class MainMenu {
                         operations.Infix_to_Prefix();
                         break;
                     case 3:
-
                         boolean isRunning = true;
-
                         do {
-
                             operations.Postfix_to_Infix();
-
                             String tryAgain;
                             while (true) {
                                 System.out.print("Try Again? (Y/N): ");
@@ -52,11 +48,9 @@ public class MainMenu {
                                     System.out.println("Invalid input. Please enter 'Y' or 'N'.");
                                 }
                             }
-
                             if (tryAgain.equalsIgnoreCase("n")) {
                                 isRunning = false;
                             }
-
                         } while (isRunning);
 
                         break;
@@ -90,6 +84,5 @@ public class MainMenu {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 }
