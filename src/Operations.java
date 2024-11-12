@@ -56,10 +56,7 @@ public class Operations {
             if (Character.isLetterOrDigit(expressionCharacter)) {
                 postfix.append(expressionCharacter);
             } else if (expressionCharacter == '(') {
-                // Check if the previous character implies missing multiplication
-                /*if (i > 0 && (Character.isLetterOrDigit(infix.charAt(i - 1)) || infix.charAt(i - 1) == ')')) {
-                    throw new IllegalArgumentException();
-                }*/
+
                 stack.push(expressionCharacter);
             } else if (expressionCharacter == ')') {
                 while (!stack.isEmpty() && stack.peek() != '(') {
@@ -70,13 +67,6 @@ public class Operations {
                 }
                 stack.pop();
 
-                // Check if the next character implies missing multiplication
-                /*if (i + 1 < infix.length()) {
-                    char nextChar = infix.charAt(i + 1);
-                    if (Character.isLetterOrDigit(nextChar) || nextChar == '(') {
-                        throw new IllegalArgumentException();
-                    }
-                }*/
             } else if (Operator(expressionCharacter)) {
                 while (!stack.isEmpty() && orderOfOperations(expressionCharacter) <= orderOfOperations(stack.peek())) {
                     postfix.append(stack.pop());
