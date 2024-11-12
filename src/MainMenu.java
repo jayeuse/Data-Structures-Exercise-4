@@ -1,16 +1,17 @@
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class MainMenu {
+public class MainMenu extends Operations{
     Scanner sc = new Scanner(System.in);
     Operations operations = new Operations();
 
     String filler;
 
-    public void createMenu() {
-        while (true) {
-            System.out.println("=================================");
-            System.out.println("|         Stacks Operations      |");
+    public void createMenu () {
+
+        while (true){
+            System.out.println("==================================");
+            System.out.println("|        Stacks Operations       |");
             System.out.println("==================================");
             System.out.println("|                                |");
             System.out.println("|  1. Infix to Postfix           |");
@@ -21,14 +22,14 @@ public class MainMenu {
             System.out.println("==================================");
             System.out.print("Enter Choice: ");
 
-            try {
+            try{
+
                 int choice = sc.nextInt();
                 sc.nextLine();
-                boolean isRunning = false;
+                boolean isRunning = true;
 
-                switch (choice) {
+                switch (choice){
                     case 1:
-                        isRunning = true;
                         do {
                             operations.Infix_to_Postfix();
                             String tryAgain;
@@ -47,10 +48,8 @@ public class MainMenu {
                                 isRunning = false;
                             }
                         } while (isRunning);
-
                         break;
                     case 2:
-                        isRunning = true;
                         do {
                             operations.Infix_to_Prefix();
                             String tryAgain;
@@ -71,7 +70,6 @@ public class MainMenu {
                         } while (isRunning);
                         break;
                     case 3:
-                        isRunning = true;
                         do {
                             operations.Postfix_to_Infix();
                             String tryAgain;
@@ -90,7 +88,6 @@ public class MainMenu {
                                 isRunning = false;
                             }
                         } while (isRunning);
-
                         break;
                     case 0:
                         System.out.println("Ending Program");
@@ -99,7 +96,8 @@ public class MainMenu {
                         System.out.println("Error: Please Enter a valid choice!");
                         break;
                 }
-            } catch (InputMismatchException e) {
+
+            }catch (InputMismatchException e) {
                 System.out.println("Error: Please Enter a valid choice!");
                 sc.nextLine();
             }
@@ -122,6 +120,4 @@ public class MainMenu {
             e.printStackTrace();
         }
     }
-
-
 }

@@ -20,9 +20,16 @@ public class Operations {
                 infix = infix.toUpperCase();
                 infix = infix.replaceAll("\\s+", "");
 
-                if (infix.matches(".*\\d.*")) {
-                    System.out.println("Error: Numbers are not allowed in the expression!");
-                    continue;
+                if (infix.isEmpty()) {
+                    throw new IllegalArgumentException();
+                }
+
+                if (!infix.matches(".*[+\\-*/()].*")) {
+                    throw new IllegalArgumentException();
+                }
+
+                if (!infix.matches("[a-zA-Z+\\-*/() ]+")) {
+                    throw new IllegalArgumentException();
                 }
                 System.out.println("-------------------------* * *-------------------------");
                 System.out.println("Infix Expression: " + infix);
@@ -32,132 +39,155 @@ public class Operations {
                 System.out.println("Converted expression from Infix to POSTFIX: " + postfix);
                 System.out.println("-------------------------* * *-------------------------");
                 continueConversion = false; //ADDED THIS TO END THE LOOP WHENEVER THERES A SUCCESSFUL CONVERSION
-            }catch (Exception e){
-                System.out.println("Error: Please enter a valid INFIX EXPRESSION!");
-                sc.nextLine();
+            } catch (IllegalArgumentException e) {
+                System.out.println("Error: Invalid INFIX EXPRESSION.");
             }
 
-            /* REMOVED THIS CODE, MOVED THE TRY AGAIN IN THE MAIN MENU
-            System.out.print("Do you want to convert another expression? (Y/N): ");
-            String UserInput = sc.nextLine().trim().toUpperCase().toLowerCase();
-
-            if (!UserInput.equals("Y")) {
-                continueConversion = false;
-                System.out.println("Thank you for using the program!");
-            }*/
         }
     }
-    private String InToPos(String infix) {
 
-        String postfix = "";
+    private String InToPos(String infix) {
+        StringBuilder postfix = new StringBuilder();
         Stack<Character> stack = new Stack<>();
+
         for (int i = 0; i < infix.length(); i++) {
-            char ch = infix.charAt(i);
-            if (ch == '(') {
-                stack.push(ch);
-            } else if (ch == ')') {
+            char expressionCharacter = infix.charAt(i);
+
+            if (Character.isLetterOrDigit(expressionCharacter)) {
+                postfix.append(expressionCharacter);
+            } else if (expressionCharacter == '(') {
+                // Check if the previous character implies missing multiplication
+                /*if (i > 0 && (Character.isLetterOrDigit(infix.charAt(i - 1)) || infix.charAt(i - 1) == ')')) {
+                    throw new IllegalArgumentException();
+                }*/
+                stack.push(expressionCharacter);
+            } else if (expressionCharacter == ')') {
                 while (!stack.isEmpty() && stack.peek() != '(') {
-                    postfix += stack.pop();
+                    postfix.append(stack.pop());
+                }
+                if (stack.isEmpty()) {
+                    throw new IllegalArgumentException();
                 }
                 stack.pop();
-            } else if (Character.isLetterOrDigit(ch)) {
-                postfix += ch;
-            } else {
-                while (!stack.isEmpty() && precedence(ch) <= precedence(stack.peek())) {
-                    postfix += stack.pop();
+
+                // Check if the next character implies missing multiplication
+                /*if (i + 1 < infix.length()) {
+                    char nextChar = infix.charAt(i + 1);
+                    if (Character.isLetterOrDigit(nextChar) || nextChar == '(') {
+                        throw new IllegalArgumentException();
+                    }
+                }*/
+            } else if (Operator(expressionCharacter)) {
+                while (!stack.isEmpty() && orderOfOperations(expressionCharacter) <= orderOfOperations(stack.peek())) {
+                    postfix.append(stack.pop());
                 }
-                stack.push(ch);
+                stack.push(expressionCharacter);
             }
         }
+
         while (!stack.isEmpty()) {
-            postfix += stack.pop();
+            if (stack.peek() == '(') {
+                throw new IllegalArgumentException();
+            }
+            postfix.append(stack.pop());
         }
 
-        return postfix;
+        return postfix.toString();
+    }
+
+    private static int orderOfOperations(char characterExpression) {
+        switch (characterExpression) {
+            case '+':
+            case '-':
+                return 1;
+            case '*':
+            case '/':
+                return 2;
+            case '^':
+                return 3;
+            default:
+                return -1;
+        }
+
+    }
+
+    private static boolean Operator(char characterExpression) {
+        return characterExpression == '+' || characterExpression == '-' || characterExpression == '*' || characterExpression == '/' || characterExpression == '^';
     }
 
     public void Infix_to_Prefix() {
         while (true) {
-            System.out.print("Enter infix expression: ");
-            String infix = sc.nextLine().trim();
+            try{
+                System.out.println("-------------------------* * *-------------------------");
+                System.out.println("Infix to Prefix Operation");
+                System.out.println("-------------------------* * *-------------------------");
+                System.out.print("Enter infix expression: ");
+                String infix = sc.nextLine().trim();
 
-            if (!isValidInfix(infix)) {
-                System.out.println("Invalid infix expression. Returning to main menu.");
-                return;
-            } else {
-                String reversedInfix = reverseString(infix);
-                String postfix = infixToPostfix(reversedInfix);
-                String prefix = reverseString(postfix);
-                System.out.println("Prefix expression: " + prefix);
+                infix = infix.toUpperCase();
 
-                System.out.print("Try Again? (Y/N): ");
-                String tryAgain = sc.nextLine().trim().toLowerCase();
-                if (!tryAgain.equals("y")) {
-                    return;
+                if (infix.isEmpty()) {
+                    throw new IllegalArgumentException();
                 }
+
+                if (!infix.matches(".*[+\\-*/()].*")) {
+                    throw new IllegalArgumentException();
+                }
+
+                if (!infix.matches("[a-zA-Z+\\-*/() ]+")) {
+                    throw new IllegalArgumentException();
+                }
+
+                System.out.println("-------------------------* * *-------------------------");
+                System.out.println("Infix Expression: " + infix);
+
+                String reversedInfix = reverseString(infix);
+                System.out.println("Reversed Infix Expression: " + reversedInfix); //Remove this line if you don't want to see the reversed infix expression
+                String postfix = InToPos(reversedInfix); //Uses Ivee's Method
+                System.out.println("Reverse Postfix Expression: " + postfix);
+                String prefix = reverseString(postfix); //Remove this line if you don't want to see the reversed postfix expression
+                System.out.println("-------------------------* * *-------------------------");
+                System.out.println("Converted expression from Infix to PREFIX: " + prefix);
+                System.out.println("-------------------------* * *-------------------------");
+
+                break;
+
+            }
+            catch (IllegalArgumentException e) {
+                System.out.println("Error: Invalid INFIX EXPRESSION.");
             }
         }
     }
 
-    // Validate Infix Expression
-    private boolean isValidInfix(String infix) {
-        return infix.matches("[a-zA-Z0-9+\\-*/^() ]+");
-    }
-
-    // Reverse Validated Infix Expression
     private String reverseString(String str) {
         StringBuilder reversed = new StringBuilder(str.length());
         for (int i = str.length() - 1; i >= 0; i--) {
-            char ch = str.charAt(i);
-            if (ch == '(') {
+            char expressionCharacter = str.charAt(i);
+            if (expressionCharacter == '(') {
                 reversed.append(')');
-            } else if (ch == ')') {
+            } else if (expressionCharacter == ')') {
                 reversed.append('(');
             } else {
-                reversed.append(ch);
+                reversed.append(expressionCharacter);
             }
         }
         return reversed.toString();
     }
 
-    // Convert Reversed Infix Expression to Postfix Expression
-    private String infixToPostfix(String infix) {
-        StringBuilder postfix = new StringBuilder();
-        Stack<Character> stack = new Stack<>();
-        for (char ch : infix.toCharArray()) {
-            if (Character.isWhitespace(ch)) {
-                continue;
-            }
-            if (Character.isLetterOrDigit(ch)) {
-                postfix.append(ch);
-            } else if (ch == '(') {
-                stack.push(ch);
-            } else if (ch == ')') {
-                while (!stack.isEmpty() && stack.peek() != '(') {
-                    postfix.append(stack.pop());
-                }
-                stack.pop();
-            } else {
-                while (!stack.isEmpty() && precedence(ch) <= precedence(stack.peek())) {
-                    postfix.append(stack.pop());
-                }
-                stack.push(ch);
-            }
-        }
-        while (!stack.isEmpty()) {
-            postfix.append(stack.pop());
-        }
-        return postfix.toString();
-    }
-
     public void Postfix_to_Infix() {
+        System.out.println("-------------------------* * *-------------------------");
+        System.out.println("Postfix to Infix Operation");
+        System.out.println("-------------------------* * *-------------------------");
         System.out.print("Enter a Postfix Expression: ");
-        String postfix = sc.nextLine();
+        String postfix = sc.nextLine().toUpperCase().trim();
 
         if (!isValidPostfix(postfix)) {
-            System.out.println("Invalid Postfix Expression!");
+            System.out.println("Error: Invalid POSTFIX EXPRESSION!");
             return;
         }
+
+        System.out.println("-------------------------* * *-------------------------");
+        System.out.println("Postfix Expression: " + postfix);
 
         Stack<String> stack = new Stack<>();
 
@@ -171,7 +201,7 @@ public class Operations {
             if (Character.isLetterOrDigit(characterExpression)) {
                 stack.push(String.valueOf(characterExpression));
             }
-            else if (isOperator(characterExpression)) {
+            else if (Operator(characterExpression)) {
                 // Pop the top two elements from the stack
                 String operand2 = stack.pop();
                 String operand1 = stack.pop();
@@ -185,7 +215,9 @@ public class Operations {
         }
 
         String infixExpression = stack.pop();
-        System.out.println("Infix expression: " + infixExpression);
+        System.out.println("-------------------------* * *-------------------------");
+        System.out.println("Converted expression from postfix to INFIX: " + infixExpression);
+        System.out.println("-------------------------* * *-------------------------");
     }
 
     private boolean isValidPostfix(String postfix) {
@@ -198,7 +230,7 @@ public class Operations {
             }
             if (Character.isLetterOrDigit(expressionCharacter)) {
                 operandCount++;
-            } else if (isOperator(expressionCharacter)) {
+            } else if (Operator(expressionCharacter)) {
                 if (operandCount < 2) {
                     return false;
                 }
@@ -208,10 +240,6 @@ public class Operations {
             }
         }
         return operandCount == 1;
-    }
-
-    private boolean isOperator(char operatorCharacter) {
-        return operatorCharacter == '+' || operatorCharacter == '-' || operatorCharacter == '*' || operatorCharacter == '/' || operatorCharacter == '^';
     }
 
     private String applyPrecedence(String operand1, char operator, String operand2) {
@@ -231,8 +259,8 @@ public class Operations {
         if (lastOperator == '\0') {
             return false;
         }
-        int currentPrecedence = precedence(operator);
-        int lastPrecedence = precedence(lastOperator);
+        int currentPrecedence = orderOfOperations(operator);
+        int lastPrecedence = orderOfOperations(lastOperator);
 
         if (isLeftOperand) {
             result = currentPrecedence > lastPrecedence;
@@ -243,25 +271,10 @@ public class Operations {
         return result;
     }
 
-    private int precedence(char operator) {
-        switch (operator) {
-            case '+':
-            case '-':
-                return 1;
-            case '*':
-            case '/':
-                return 2;
-            case '^':
-                return 3;
-            default:
-                return -1;
-        }
-    }
-
     private char getLastOperator(String expr) {
         for (int i = expr.length() - 1; i >= 0; i--) {
             char characterExpression = expr.charAt(i);
-            if (isOperator(characterExpression)) {
+            if (Operator(characterExpression)) {
                 return characterExpression;
             }
         }
